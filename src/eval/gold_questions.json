@@ -1,0 +1,781 @@
+{
+  "dataset": "TechCorp QA Gold Set (multi-document)",
+  "version": "3.0",
+  "source_document": "corpus/ (TechCorp handbook + 8 supporting policy documents)",
+  "description": "Hand-written question/answer pairs grounded in the TechCorp document corpus, used to measure retrieval (recall@k) and answer quality (LLM-as-judge). 'answerable: false' items are out-of-scope and exist to verify the system refuses / says 'I don't know' instead of hallucinating. relevant_keywords must co-occur within a single source chunk.",
+  "schema": {
+    "id": "stable unique id",
+    "question": "user question",
+    "expected_answer": "the correct, grounded answer",
+    "source": "source filename the answer comes from",
+    "page": "page number where the supporting text lives (null for markdown docs / unanswerable)",
+    "relevant_keywords": "distinctive terms that MUST appear together in a correctly retrieved chunk; used for retrieval hit-rate scoring",
+    "category": "factual | multi_fact | synthesis | out_of_scope",
+    "answerable": "true if the corpus contains the answer, false if it does not"
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "question": "What are the standard work hours at TechCorp?",
+      "expected_answer": "Monday through Friday, 9:00 AM to 5:00 PM EST.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "9:00 AM",
+        "5:00 PM",
+        "EST"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q02",
+      "question": "On which days are employees allowed to work remotely?",
+      "expected_answer": "Tuesdays and Thursdays, with additional flexibility possible if approved by a department manager.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "remotely",
+        "Tuesdays",
+        "Thursdays"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q03",
+      "question": "How many paid time off days do employees get per year?",
+      "expected_answer": "20 days of paid time off per calendar year.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "20 days",
+        "paid time off"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q04",
+      "question": "How many unused PTO days can be carried over to the next year?",
+      "expected_answer": "Up to five days of unused PTO may be carried forward into the following year.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "carried forward",
+        "five days"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q05",
+      "question": "What is the annual learning and development budget?",
+      "expected_answer": "$1,200 per year, usable for online courses, certifications, technical books, conferences, and workshops.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "$1,200",
+        "learning and development budget"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q06",
+      "question": "What equipment and home office stipend do engineers receive?",
+      "expected_answer": "Engineers receive a MacBook Pro and a $500 home office stipend.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "MacBook Pro",
+        "$500",
+        "stipend"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q07",
+      "question": "How often are performance reviews conducted?",
+      "expected_answer": "Performance reviews are conducted twice annually, with continuous feedback possible throughout the year.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "Performance reviews",
+        "twice annually"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q08",
+      "question": "What is the primary communication platform at TechCorp?",
+      "expected_answer": "Slack is the primary communication platform used within TechCorp.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "Slack",
+        "primary communication"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q09",
+      "question": "How are employees paid and on what schedule?",
+      "expected_answer": "Employees are paid bi-weekly through direct deposit.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "bi-weekly",
+        "direct deposit"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q10",
+      "question": "What security practices are employees required to follow?",
+      "expected_answer": "Employees must use strong passwords, enable multi-factor authentication on approved systems, keep confidential information within authorized channels, and report any suspected security incident, phishing attempt, or data breach immediately to the Information Security team.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "strong passwords",
+        "multi-factor authentication",
+        "Information Security"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q11",
+      "question": "Within how many days must expense reports be submitted, and what must they include?",
+      "expected_answer": "Expense reports must be submitted within 10 business days, include valid receipts, and clearly describe the business purpose.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "10 business days",
+        "receipts",
+        "business purpose"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q12",
+      "question": "What is required before an employee can travel for business?",
+      "expected_answer": "Business travel must receive prior approval from the employee's manager, and employees should use cost-effective, company-approved booking platforms.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "travel",
+        "prior approval",
+        "manager"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q13",
+      "question": "What types of insurance are eligible employees offered?",
+      "expected_answer": "Eligible employees receive medical, dental, and vision insurance plans, plus wellness and mental health support programs.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "medical",
+        "dental",
+        "vision"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q14",
+      "question": "What must an employee do when their employment is terminated?",
+      "expected_answer": "They must return all company-owned equipment, documents, and confidential materials; system access may be revoked immediately, and confidentiality obligations continue after employment ends.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "return",
+        "company-owned equipment",
+        "confidential"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q15",
+      "question": "How far in advance should vacation requests be submitted?",
+      "expected_answer": "Vacation requests should be submitted at least two weeks in advance whenever possible.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "two weeks",
+        "vacation requests"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q16",
+      "question": "On what criteria are employees evaluated during performance reviews?",
+      "expected_answer": "Technical expertise, collaboration and teamwork, communication effectiveness, leadership contributions, problem-solving capabilities, and impact on business objectives.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 2,
+      "relevant_keywords": [
+        "Technical expertise",
+        "Collaboration",
+        "Problem-solving"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q17",
+      "question": "What should an employee do if they notice a workplace hazard or injury?",
+      "expected_answer": "Immediately report workplace hazards, injuries, unsafe conditions, or emergencies to Human Resources or Facilities.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "report",
+        "hazards",
+        "Human Resources",
+        "Facilities"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q18",
+      "question": "What are the rules around social media and public communication?",
+      "expected_answer": "Employees should not share confidential information publicly, must communicate professionally when representing TechCorp, and public statements on behalf of the company require appropriate authorization.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 3,
+      "relevant_keywords": [
+        "social media",
+        "confidential",
+        "authorization"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q19",
+      "question": "Is TechCorp an equal opportunity employer, and what is its stance on discrimination?",
+      "expected_answer": "Yes. TechCorp is an equal opportunity employer; discrimination based on race, religion, gender, disability, age, or any protected characteristic is strictly prohibited.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "equal opportunity",
+        "discrimination",
+        "prohibited"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q20",
+      "question": "What requirements must remote employees meet while working from home?",
+      "expected_answer": "They must maintain reliable internet, be available during core collaboration hours, follow all security and confidentiality guidelines, and maintain professional conduct in virtual meetings.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "reliable internet",
+        "core collaboration hours",
+        "confidentiality"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q21",
+      "question": "If I work remotely on Wednesday and need a new laptop, what does the handbook say I am entitled to and is Wednesday an allowed remote day?",
+      "expected_answer": "Engineers are provided a MacBook Pro and a $500 home office stipend, but remote work is only allowed on Tuesdays and Thursdays by default, so Wednesday is not a standard remote day unless a manager approves additional flexibility.",
+      "source": "TechCorp_Official_Employee_Handbook.pdf",
+      "page": 1,
+      "relevant_keywords": [
+        "MacBook Pro",
+        "Tuesdays",
+        "Thursdays"
+      ],
+      "category": "synthesis",
+      "answerable": true
+    },
+    {
+      "id": "q22",
+      "question": "What is TechCorp's 401(k) matching contribution policy?",
+      "expected_answer": "TechCorp matches 100% of employee contributions up to 4% of the employee's annual salary. The company match vests after 2 years of continuous service, while employee contributions are always fully vested.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "100%",
+        "4%"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q23",
+      "question": "How many paid sick days do employees receive per year?",
+      "expected_answer": "Employees receive 10 paid sick days per calendar year, separate from PTO.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "10 paid sick days"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q24",
+      "question": "What is the vesting schedule for RSU stock grants?",
+      "expected_answer": "RSU grants vest over a 4-year period with a 1-year cliff: 25% vests after the first year, and the remaining 75% vests in equal quarterly installments over the following three years.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "4-year",
+        "1-year cliff"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q25",
+      "question": "Who is the CEO of TechCorp?",
+      "expected_answer": "Jordan Avery is the Chief Executive Officer (CEO) and co-founded TechCorp in 2015.",
+      "source": "corpus/company_overview.md",
+      "page": null,
+      "relevant_keywords": [
+        "Jordan Avery",
+        "CEO"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q26",
+      "question": "When was TechCorp founded and where is it headquartered?",
+      "expected_answer": "TechCorp was founded in 2015 and is headquartered in Austin, Texas.",
+      "source": "corpus/company_overview.md",
+      "page": null,
+      "relevant_keywords": [
+        "2015",
+        "Austin"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q27",
+      "question": "Who is the Chief Technology Officer of TechCorp?",
+      "expected_answer": "Morgan Lee is the Chief Technology Officer (CTO), overseeing engineering, security, and infrastructure.",
+      "source": "corpus/company_overview.md",
+      "page": null,
+      "relevant_keywords": [
+        "Morgan Lee",
+        "CTO"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q28",
+      "question": "When is the annual benefits open enrollment period?",
+      "expected_answer": "Open enrollment runs from November 1 through November 30 each year.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "November 1",
+        "November 30"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q29",
+      "question": "How much does TechCorp contribute to an eligible employee's HSA?",
+      "expected_answer": "TechCorp contributes $750 per year to each eligible employee's Health Savings Account (HSA).",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "$750",
+        "HSA"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q30",
+      "question": "How much paid parental leave do primary and secondary caregivers receive?",
+      "expected_answer": "12 weeks of paid leave for the primary caregiver and 6 weeks for the secondary caregiver, available after 6 months of employment.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "12 weeks",
+        "6 weeks"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q31",
+      "question": "What medical plan tiers does TechCorp offer?",
+      "expected_answer": "Three tiers: Basic, Standard (PPO), and Premium (PPO).",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q32",
+      "question": "What are the password requirements at TechCorp?",
+      "expected_answer": "Passwords must be at least 14 characters, mix character types, be changed at least every 90 days, and never be reused across personal and company accounts.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "14 characters",
+        "90 days"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q33",
+      "question": "How quickly must a security incident be reported?",
+      "expected_answer": "Security incidents must be reported to the Information Security team within 1 hour of discovery.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "1 hour",
+        "Information Security"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q34",
+      "question": "What password manager does TechCorp provide?",
+      "expected_answer": "TechCorp provides every employee with a 1Password password manager license.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "1Password"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q35",
+      "question": "What are the four data classification levels?",
+      "expected_answer": "Public, Internal, Confidential, and Restricted.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "Public",
+        "Internal",
+        "Confidential",
+        "Restricted"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q36",
+      "question": "How often are company laptops refreshed?",
+      "expected_answer": "Company laptops are refreshed every 3 years, or sooner if a device fails or no longer meets performance requirements.",
+      "source": "corpus/equipment_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "3 years",
+        "refreshed"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q37",
+      "question": "How much can an employee spend on additional peripherals and accessories?",
+      "expected_answer": "Up to a total of $2,000 with manager approval; purchases above that cap require director-level approval.",
+      "source": "corpus/equipment_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "$2,000",
+        "manager approval"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q38",
+      "question": "What are the meal per diem amounts for domestic and international travel?",
+      "expected_answer": "$75 per day for domestic travel and $100 per day for international travel.",
+      "source": "corpus/travel_expense_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "$75",
+        "$100"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q39",
+      "question": "What is the mileage reimbursement rate for using a personal vehicle?",
+      "expected_answer": "$0.67 per mile for approved business travel.",
+      "source": "corpus/travel_expense_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "$0.67 per mile"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q40",
+      "question": "How long is the onboarding buddy program?",
+      "expected_answer": "Every new employee is paired with an onboarding buddy for their first 90 days.",
+      "source": "corpus/onboarding_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "90 days",
+        "buddy"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q41",
+      "question": "Which trainings must new employees complete in their first week?",
+      "expected_answer": "Security Awareness Training, Code of Conduct Training, and Anti-Harassment Training, all within the first week.",
+      "source": "corpus/onboarding_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "Security Awareness",
+        "Anti-Harassment"
+      ],
+      "category": "multi_fact",
+      "answerable": true
+    },
+    {
+      "id": "q42",
+      "question": "What is the limit on gifts an employee can accept from a vendor?",
+      "expected_answer": "Employees may not accept gifts worth more than $100 from any vendor, customer, or business partner.",
+      "source": "corpus/code_of_conduct.md",
+      "page": null,
+      "relevant_keywords": [
+        "$100",
+        "vendor"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q43",
+      "question": "How quickly must a SEV1 incident be acknowledged?",
+      "expected_answer": "A SEV1 (critical) incident requires acknowledgement within 15 minutes and an immediate response.",
+      "source": "corpus/engineering_practices.md",
+      "page": null,
+      "relevant_keywords": [
+        "SEV1",
+        "15 minutes"
+      ],
+      "category": "factual",
+      "answerable": true
+    },
+    {
+      "id": "q44",
+      "question": "What is TechCorp's sabbatical leave policy?",
+      "expected_answer": "The corpus does not mention any sabbatical leave policy.",
+      "source": null,
+      "page": null,
+      "relevant_keywords": [],
+      "category": "out_of_scope",
+      "answerable": false
+    },
+    {
+      "id": "q45",
+      "question": "Does TechCorp offer relocation assistance or a relocation bonus?",
+      "expected_answer": "The corpus does not mention relocation assistance or any relocation bonus.",
+      "source": null,
+      "page": null,
+      "relevant_keywords": [],
+      "category": "out_of_scope",
+      "answerable": false
+    },
+    {
+      "id": "q46",
+      "question": "Will TechCorp reimburse tuition for a university degree program?",
+      "expected_answer": "The corpus does not mention tuition reimbursement for degree programs; the learning and development budget covers courses, certifications, books, conferences, and workshops, not degrees.",
+      "source": null,
+      "page": null,
+      "relevant_keywords": [],
+      "category": "out_of_scope",
+      "answerable": false
+    },
+    {
+      "id": "q47",
+      "question": "Does TechCorp reimburse gym or fitness membership fees?",
+      "expected_answer": "The corpus does not mention gym or fitness membership reimbursement, though it does offer wellness support programs.",
+      "source": null,
+      "page": null,
+      "relevant_keywords": [],
+      "category": "out_of_scope",
+      "answerable": false
+    },
+    {
+      "id": "q48",
+      "question": "What does TechCorp currently match on 401(k) contributions?",
+      "expected_answer": "100% of employee contributions up to 4% of salary.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "100%",
+        "4%"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q49",
+      "question": "How many paid sick days do employees receive per year under the current policy?",
+      "expected_answer": "10 paid sick days per calendar year.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "10 paid sick days"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q50",
+      "question": "What is the minimum password length required under the current IT security policy?",
+      "expected_answer": "At least 14 characters.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "14 characters"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q51",
+      "question": "What is the current nightly hotel cap for domestic travel?",
+      "expected_answer": "$250 per night for domestic travel.",
+      "source": "corpus/travel_expense_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "$250",
+        "per night"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q52",
+      "question": "What mileage rate currently applies to personal vehicle use?",
+      "expected_answer": "$0.67 per mile.",
+      "source": "corpus/travel_expense_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "$0.67"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q53",
+      "question": "How do RSUs vest under the current equity program?",
+      "expected_answer": "Over a 4-year period with a 1-year cliff.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "4-year",
+        "1-year cliff"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q54",
+      "question": "After how many failed login attempts does an account lock under the current policy?",
+      "expected_answer": "After 5 consecutive failed login attempts.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "5 consecutive failed"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q55",
+      "question": "How much does TechCorp currently contribute to an HSA each year?",
+      "expected_answer": "$750 per year.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "$750"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q56",
+      "question": "When is the current annual open enrollment period?",
+      "expected_answer": "November 1 through November 30.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "November 1",
+        "November 30"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q57",
+      "question": "How often must passwords be changed under the current security policy?",
+      "expected_answer": "At least every 90 days.",
+      "source": "corpus/it_security_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "90 days"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q58",
+      "question": "After how long does the current 401(k) employer match vest?",
+      "expected_answer": "After 2 years of continuous service.",
+      "source": "corpus/benefits_guide.md",
+      "page": null,
+      "relevant_keywords": [
+        "vests after 2 years"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    },
+    {
+      "id": "q59",
+      "question": "What is the current international travel per diem?",
+      "expected_answer": "$100 per day for international travel.",
+      "source": "corpus/travel_expense_policy.md",
+      "page": null,
+      "relevant_keywords": [
+        "international",
+        "$100"
+      ],
+      "category": "temporal_disambiguation",
+      "answerable": true
+    }
+  ]
+}

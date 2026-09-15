@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask your documents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-1: #0b1020;
+      --bg-2: #131a32;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-strong: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #f1f5f9;
+      --muted: #8b97b1;
+      --brand-1: #6366f1;
+      --brand-2: #8b5cf6;
+      --brand-3: #22d3ee;
+      --user-1: #6366f1;
+      --user-2: #8b5cf6;
+      --ok: #34d399;
+      --danger: #fb7185;
+      --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(99, 102, 241, 0.22), transparent 60%),
+        radial-gradient(1000px 500px at 100% 0%, rgba(34, 211, 238, 0.14), transparent 55%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 860px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 0;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 6px 8px 18px;
+    }
+    .logo {
+      width: 44px; height: 44px;
+      border-radius: 13px;
+      display: grid; place-items: center;
+      font-size: 20px;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      box-shadow: 0 8px 24px -8px var(--brand-2);
+    }
+    .title h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+    .title p { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+    .badge {
+      margin-left: auto;
+      font-size: 12px; font-weight: 600;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+
+    /* ---------- Chat ---------- */
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 8px 4px 20px;
+      scroll-behavior: smooth;
+    }
+    .chat::-webkit-scrollbar { width: 8px; }
+    .chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+    .row { display: flex; gap: 12px; align-items: flex-end; animation: rise .35s cubic-bezier(.2,.8,.2,1) both; }
+    .row.user { flex-direction: row-reverse; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 11px;
+      flex-shrink: 0;
+      display: grid; place-items: center;
+      font-size: 15px;
+      border: 1px solid var(--border);
+    }
+    .avatar.bot { background: linear-gradient(135deg, var(--brand-2), var(--brand-3)); }
+    .avatar.me  { background: linear-gradient(135deg, var(--user-1), var(--user-2)); }
+
+    .bubble {
+      max-width: 74%;
+      padding: 13px 16px;
+      border-radius: 18px;
+      line-height: 1.55;
+      font-size: 15px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      box-shadow: var(--shadow);
+    }
+    .row.bot .bubble {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 6px;
+      backdrop-filter: blur(8px);
+    }
+    .row.user .bubble {
+      background: linear-gradient(135deg, var(--user-1), var(--user-2));
+      border-bottom-right-radius: 6px;
+      color: #fff;
+    }
+
+    .system {
+      align-self: center;
+      font-size: 12.5px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 999px;
+      animation: rise .35s ease both;
+    }
+
+    .empty {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      padding: 30px;
+      animation: rise .5s ease both;
+    }
+    .empty .big { font-size: 40px; margin-bottom: 12px; }
+    .empty h2 { color: var(--text); margin: 0 0 6px; font-weight: 700; }
+    .empty p { margin: 0; font-size: 14px; max-width: 360px; }
+
+    /* typing dots */
+    .dots { display: inline-flex; gap: 5px; padding: 4px 2px; }
+    .dots span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--muted);
+      animation: blink 1.3s infinite ease-in-out both;
+    }
+    .dots span:nth-child(2) { animation-delay: .18s; }
+    .dots span:nth-child(3) { animation-delay: .36s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+
+    /* ---------- Composer ---------- */
+    .composer-wrap { padding: 6px 0 18px; }
+
+    .attachment {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      max-width: 100%;
+      margin-bottom: 10px;
+      padding: 9px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      animation: rise .25s ease both;
+    }
+    .attachment.show { display: inline-flex; }
+    .attachment .ico {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: grid; place-items: center; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    }
+    .attachment .name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+    .attachment .state { color: var(--muted); font-size: 12px; }
+    .attachment .state.ok { color: var(--ok); }
+    .attachment .state.err { color: var(--danger); }
+    .attachment .spinner {
+      width: 13px; height: 13px; border-radius: 50%;
+      border: 2px solid var(--border); border-top-color: var(--brand-3);
+      animation: spin .7s linear infinite; display: none;
+    }
+    .attachment.loading .spinner { display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .attachment .remove {
+      border: none; background: none; color: var(--muted);
+      cursor: pointer; font-size: 17px; line-height: 1; padding: 2px;
+    }
+    .attachment .remove:hover { color: var(--text); }
+
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 20px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .composer:focus-within { border-color: rgba(139, 92, 246, 0.6); }
+
+    .icon-btn {
+      width: 42px; height: 42px;
+      flex-shrink: 0;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: background .15s, transform .1s;
+    }
+    .icon-btn:hover { background: var(--surface-strong); }
+    .icon-btn:active { transform: scale(.94); }
+
+    #question {
+      flex: 1;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 15px;
+      line-height: 1.5;
+      padding: 11px 6px;
+      max-height: 140px;
+    }
+    #question::placeholder { color: var(--muted); }
+    #question:disabled { cursor: not-allowed; }
+
+    #send {
+      width: 42px; height: 42px;
+      flex-shrink: 0;
+      border: none;
+      border-radius: 13px;
+      cursor: pointer;
+      display: grid; place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      box-shadow: 0 8px 20px -8px var(--brand-2);
+      transition: transform .1s, opacity .2s, filter .2s;
+    }
+    #send:hover:not(:disabled) { filter: brightness(1.08); }
+    #send:active:not(:disabled) { transform: scale(.94); }
+    #send:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+    #send svg { width: 19px; height: 19px; }
+
+    .hint { text-align: center; font-size: 11.5px; color: var(--muted); margin: 10px 0 0; }
+
+    /* ---------- Drag overlay ---------- */
+    .drop-overlay {
+      position: fixed; inset: 0;
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 50;
+      background: rgba(11, 16, 32, 0.78);
+      backdrop-filter: blur(6px);
+    }
+    body.dragging .drop-overlay { display: flex; }
+    .drop-card {
+      pointer-events: none;
+      text-align: center;
+      padding: 46px 60px;
+      border-radius: 24px;
+      border: 2px dashed rgba(139, 92, 246, 0.7);
+      background: var(--surface-strong);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .drop-card .big { font-size: 46px; margin-bottom: 10px; }
+    .drop-card h3 { margin: 0; font-size: 18px; }
+    .drop-card p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+
+    @media (max-width: 640px) {
+      .app { padding: 12px 12px 0; }
+      .bubble { max-width: 82%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="drop-overlay">
+    <div class="drop-card">
+      <div class="big">📎</div>
+      <h3>Drop your document</h3>
+      <p>Release to upload and start asking</p>
+    </div>
+  </div>
+
+  <div class="app">
+    <header>
+      <div class="logo">📚</div>
+      <div class="title">
+        <h1>Document Assistant</h1>
+        <p>Upload a file and ask anything about it</p>
+      </div>
+      <span class="badge" id="badge">No file</span>
+    </header>
+
+    <main class="chat" id="messages">
+      <div class="empty" id="empty">
+        <div class="big">💬</div>
+        <h2>Ask your documents</h2>
+        <p>Attach a file with the 📎 button or drag &amp; drop it here, then ask a question to get started.</p>
+      </div>
+    </main>
+
+    <div class="composer-wrap">
+      <div class="attachment" id="attachment">
+        <span class="ico">📄</span>
+        <span class="name" id="attachName"></span>
+        <span class="spinner"></span>
+        <span class="state" id="attachState"></span>
+        <button class="remove" id="attachRemove" title="Remove">&times;</button>
+      </div>
+
+      <div class="composer">
+        <input type="file" id="fileInput" hidden />
+        <button class="icon-btn" id="attachBtn" title="Attach file">📎</button>
+        <textarea id="question" rows="1" placeholder="Ask anything… or attach a file for context"></textarea>
+        <button id="send" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </button>
+      </div>
+      <p class="hint">Enter to send · Shift+Enter for a new line</p>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById("messages");
+    const empty = document.getElementById("empty");
+    const fileInput = document.getElementById("fileInput");
+    const attachBtn = document.getElementById("attachBtn");
+    const attachment = document.getElementById("attachment");
+    const attachName = document.getElementById("attachName");
+    const attachState = document.getElementById("attachState");
+    const attachRemove = document.getElementById("attachRemove");
+    const questionEl = document.getElementById("question");
+    const sendBtn = document.getElementById("send");
+    const badge = document.getElementById("badge");
+
+    let uploadPromise = null; // pending /upload, if any
+
+    function hideEmpty() { if (empty) empty.style.display = "none"; }
+
+    function addMessage(text, who) {
+      hideEmpty();
+      if (who === "system") {
+        const s = document.createElement("div");
+        s.className = "system";
+        s.textContent = text;
+        messages.appendChild(s);
+        messages.scrollTop = messages.scrollHeight;
+        return s;
+      }
+      const row = document.createElement("div");
+      row.className = "row " + (who === "user" ? "user" : "bot");
+      const avatar = document.createElement("div");
+      avatar.className = "avatar " + (who === "user" ? "me" : "bot");
+      avatar.textContent = who === "user" ? "🧑" : "🤖";
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+      row.appendChild(avatar);
+      row.appendChild(bubble);
+      messages.appendChild(row);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    }
+
+    function clearAttachment() {
+      attachment.classList.remove("show", "loading");
+      fileInput.value = "";
+      badge.textContent = "No file";
+    }
+
+    attachBtn.addEventListener("click", () => fileInput.click());
+    attachRemove.addEventListener("click", clearAttachment);
+
+    async function uploadFile(file) {
+      if (!file) return;
+
+      attachment.classList.add("show", "loading");
+      attachName.textContent = file.name;
+      attachState.textContent = "uploading…";
+      attachState.className = "state";
+      badge.textContent = "Uploading…";
+
+      const form = new FormData();
+      form.append("file", file);
+
+      // Expose the in-flight upload so that ask() can wait for it.
+      uploadPromise = (async () => {
+        try {
+          const res = await fetch("/upload", { method: "POST", body: form });
+          if (!res.ok) throw new Error("Upload failed (" + res.status + ")");
+          const data = await res.json();
+          attachment.classList.remove("loading");
+          attachState.textContent = "ready";
+          attachState.className = "state ok";
+          badge.textContent = "1 file ready";
+          addMessage("Uploaded “" + data.filename + "”. Ask away!", "system");
+        } catch (err) {
+          attachment.classList.remove("loading");
+          attachState.textContent = "failed";
+          attachState.className = "state err";
+          badge.textContent = "No file";
+          addMessage(err.message, "system");
+          throw err;
+        } finally {
+          fileInput.value = "";
+        }
+      })();
+
+      try {
+        await uploadPromise;
+      } catch (_) {
+        /* surfaced as a system message above */
+      } finally {
+        uploadPromise = null;
+      }
+    }
+
+    fileInput.addEventListener("change", () => uploadFile(fileInput.files[0]));
+
+    // ---- Drag & drop anywhere ----
+    let dragDepth = 0;
+    window.addEventListener("dragenter", (e) => {
+      if (!e.dataTransfer || ![...e.dataTransfer.types].includes("Files")) return;
+      e.preventDefault();
+      dragDepth++;
+      document.body.classList.add("dragging");
+    });
+    window.addEventListener("dragover", (e) => {
+      if (e.dataTransfer && [...e.dataTransfer.types].includes("Files")) e.preventDefault();
+    });
+    window.addEventListener("dragleave", () => {
+      dragDepth = Math.max(0, dragDepth - 1);
+      if (dragDepth === 0) document.body.classList.remove("dragging");
+    });
+    window.addEventListener("drop", (e) => {
+      if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+      e.preventDefault();
+      dragDepth = 0;
+      document.body.classList.remove("dragging");
+      uploadFile(e.dataTransfer.files[0]);
+    });
+
+    // ---- Ask ----
+    async function ask() {
+      const question = questionEl.value.trim();
+      if (!question) return;
+
+      addMessage(question, "user");
+      questionEl.value = "";
+      questionEl.style.height = "auto";
+      sendBtn.disabled = true;
+      questionEl.disabled = true;
+
+      const bubble = addMessage("", "bot");
+      bubble.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+
+      try {
+        // If a file is still uploading, wait for it to finish so the answer
+        // can use its context. With no upload in flight we just ask directly.
+        if (uploadPromise) {
+          try { await uploadPromise; } catch (_) { /* handled in uploadFile */ }
+        }
+
+        const res = await fetch("/ask?question=" + encodeURIComponent(question), { method: "POST" });
+        if (!res.ok) throw new Error("Request failed (" + res.status + ")");
+        const data = await res.json();
+        let answer = data.answer ?? data.results ?? "(no answer)";
+        if (typeof answer !== "string") answer = JSON.stringify(answer);
+        bubble.textContent = answer;
+      } catch (err) {
+        bubble.textContent = "⚠️ " + err.message;
+      } finally {
+        sendBtn.disabled = false;
+        questionEl.disabled = false;
+        questionEl.focus();
+      }
+    }
+
+    sendBtn.addEventListener("click", ask);
+    questionEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(); }
+    });
+    questionEl.addEventListener("input", () => {
+      questionEl.style.height = "auto";
+      questionEl.style.height = Math.min(questionEl.scrollHeight, 140) + "px";
+    });
+  </script>
+</body>
+</html>
