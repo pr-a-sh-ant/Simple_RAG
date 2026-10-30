@@ -1,13 +1,13 @@
+from pathlib import Path
 from typing import Annotated
+
+import dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-import dotenv
 
-
-from src.services import VectorStoreService, DocumentService, PromptService
 from src.model.model_gen import ChatService
+from src.services import DocumentService, PromptService, VectorStoreService
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
@@ -23,6 +23,7 @@ app = FastAPI()
 
 STATIC_DIR = Path("src/static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 @app.get("/")
 async def root():
@@ -46,6 +47,7 @@ async def upload_file(file: Annotated[UploadFile, File()]):
 
     return {"filename": file.filename, "message": "File uploaded successfully"}
 
+
 @app.post("/ask")
 async def ask_question(question: str):
     hits = vector_store_svc.search(question, k=5)
@@ -53,7 +55,7 @@ async def ask_question(question: str):
     context = document_svc.format_context(hits)
 
     prompt, system = prompt_svc.get_prompt()
-    prompt = prompt.format(context=context , question=question)
+    prompt = prompt.format(context=context, question=question)
 
     response = model_api.generate_content(system, prompt)
     answer = response.choices[0].message.content
